@@ -8,5 +8,8 @@ def test_job_queue_round_trip():
     assert job == ("scan", {"root": "/tmp"})
 
 
-def test_watcher_disabled_marker():
-    assert start_watcher("/tmp/music").startswith("watcher-disabled:")
+def test_watcher_start_and_stop(tmp_path):
+    events: list[str] = []
+    handle = start_watcher(str(tmp_path), events.append)
+    handle.stop()
+    assert handle is not None

@@ -12,12 +12,13 @@ class LibraryTable(QTableWidget):
     """Track listing table."""
 
     track_selected = Signal(object)
+    selection_changed = Signal(list)
 
     def __init__(self) -> None:
         super().__init__(0, 5)
         self.setHorizontalHeaderLabels(["Artist", "Title", "Album", "Year", "Genre"])
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.setSelectionMode(QTableWidget.SelectionMode.ExtendedSelection)
         self.verticalHeader().setVisible(False)
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -30,7 +31,7 @@ class LibraryTable(QTableWidget):
         self.setColumnWidth(1, 420)
         self.setColumnWidth(2, 220)
         self.setColumnWidth(3, 80)
-        self.cellClicked.connect(self._emit_selection)
+        self.itemSelectionChanged.connect(self._emit_selection)
         self._tracks: list[Track] = []
 
     def load_tracks(self, tracks: Iterable[Track]) -> None:
@@ -50,6 +51,12 @@ class LibraryTable(QTableWidget):
                 self.setItem(row, col, item)
         self.horizontalScrollBar().setValue(0)
 
-    def _emit_selection(self, row: int, _column: int) -> None:
-        if 0 <= row < len(self._tracks):
-            self.track_selected.emit(self._tracks[row])
+    def selected_tracks(self) -> list[Track]:
+        rows = sorted({item.row() for item in self.selectedItems()})
+        return [self._tracks[row] for row in rows if 0 <= row < len(self._tracks)]
+
+    def _emit_selection(self) -> None:
+        selected = self.selected_tracks()
+        if selected:
+            self.track_selected.emit(selected[0])
+        self.selection_changed.emit(selected)

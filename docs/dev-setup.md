@@ -21,7 +21,7 @@
 4. Optional: manually load `db/seeds/sample_tracks.sql`.
 
 ## 4. Tests
-1. Run unit and integration skeleton tests with `pytest`.
+1. Run tests with `pytest`.
 
 ## 5. Local folder setup
 1. Point `ROOT_FOLDER` to a small test music directory.
@@ -29,4 +29,5 @@
 
 ## 6. Launch
 1. `cratepilot`
-2. Click **Run Initial Scan** in the app window.
+2. Click **Scan Library**.
+3. Optional: start live monitoring with **Start Watcher**.

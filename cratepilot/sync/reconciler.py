@@ -1,10 +1,21 @@
-"""Periodic reconciliation placeholder for MVP."""
+"""Periodic reconciliation workflows."""
 
-from pathlib import Path
+from sqlalchemy.orm import sessionmaker
+
+from cratepilot.db.repositories.track_repo import TrackRepository
+from cratepilot.services.library_service import LibraryService
 
 
-def run_reconciliation(root_folder: str) -> int:
-    root = Path(root_folder).expanduser()
-    if not root.exists():
-        return 0
-    return sum(1 for path in root.rglob("*") if path.is_file())
+def run_reconciliation(session_factory: sessionmaker) -> tuple[int, int]:
+    service = LibraryService(session_factory)
+    with session_factory() as session:
+        tracks = TrackRepository(session).list_tracks(limit=10000)
+    processed = 0
+    conflicted = 0
+    for track in tracks:
+        ok = service.reconcile_track(track.id)
+        if ok:
+            processed += 1
+    conflicts = service.list_conflicts()
+    conflicted = len(conflicts)
+    return processed, conflicted

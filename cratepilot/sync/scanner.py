@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from cratepilot.db.repositories.sync_event_repo import SyncEventRepository
 from cratepilot.db.repositories.track_repo import TrackPayload, TrackRepository
 from cratepilot.metadata.adapter import MetadataAdapter
+from cratepilot.utils.hashing import sha256_file
 
 
 SUPPORTED_EXTENSIONS = {".mp3", ".wav", ".flac", ".aiff", ".aif", ".m4a", ".aac"}
@@ -31,10 +32,12 @@ def run_initial_scan(root_folder: str, session_factory: sessionmaker) -> ScanRes
     with session_factory() as session:
         track_repo = TrackRepository(session)
         event_repo = SyncEventRepository(session)
+        seen_paths: set[str] = set()
         for file_path in root.rglob("*"):
             if not file_path.is_file() or file_path.suffix.lower() not in SUPPORTED_EXTENSIONS:
                 continue
             result.scanned_files += 1
+            seen_paths.add(str(file_path))
             try:
                 stat = file_path.stat()
                 tags = adapter.read_tags(str(file_path))
@@ -45,6 +48,7 @@ def run_initial_scan(root_folder: str, session_factory: sessionmaker) -> ScanRes
                         extension=file_path.suffix.lower().lstrip("."),
                         file_size_bytes=stat.st_size,
                         mtime=datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc),
+                        sha256=sha256_file(str(file_path)),
                         duration_sec=tags.duration_sec,
                         title=tags.title,
                         artist=tags.artist,
@@ -62,6 +66,7 @@ def run_initial_scan(root_folder: str, session_factory: sessionmaker) -> ScanRes
                 result.imported_tracks += 1
             except Exception as exc:
                 result.failed_files += 1
-                event_repo.append_event(None, "created", "failed", {"path": str(file_path), "error": str(exc)})
+                event_repo.append_event(None, "created", "failed", {"path": str(file_path)}, error_message=str(exc))
+        track_repo.set_missing_if_not_seen(seen_paths)
         session.commit()
     return result

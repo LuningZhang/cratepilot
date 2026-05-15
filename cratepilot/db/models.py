@@ -38,6 +38,9 @@ class Track(Base):
     track_number: Mapped[Optional[str]] = mapped_column(Text)
     tag_version: Mapped[Optional[str]] = mapped_column(Text)
     sync_status: Mapped[str] = mapped_column(Text, default="pending", nullable=False)
+    last_tag_read_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    last_tag_write_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    missing_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

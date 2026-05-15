@@ -63,3 +63,32 @@ class MetadataAdapter:
             track_number=_first(tags.get("tracknumber")),
             tag_version=Path(path).suffix.lower().lstrip("."),
         )
+
+    def write_tags(self, path: str, values: dict[str, object]) -> None:
+        audio = MutagenFile(path, easy=True)
+        if audio is None:
+            raise ValueError(f"Unsupported or unreadable audio file: {path}")
+        if audio.tags is None:
+            audio.add_tags()
+
+        mapping = {
+            "title": "title",
+            "artist": "artist",
+            "album": "album",
+            "year": "date",
+            "genre": "genre",
+            "bpm": "bpm",
+            "musical_key": "initialkey",
+            "comment": "comment",
+            "track_number": "tracknumber",
+        }
+        for app_key, tag_key in mapping.items():
+            if app_key not in values:
+                continue
+            value = values[app_key]
+            if value is None or str(value).strip() == "":
+                if tag_key in audio.tags:
+                    del audio.tags[tag_key]
+            else:
+                audio.tags[tag_key] = [str(value)]
+        audio.save()

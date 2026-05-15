@@ -3,11 +3,16 @@
 macOS-first local DJ library manager.
 
 ## Current status
-Milestone 1 MVP is runnable and includes:
+V1 build is runnable and includes:
 1. Onboarding for local root folder + DB settings.
 2. Auto database creation and auto migration on startup.
 3. Initial recursive ingest scan for MP3/WAV/FLAC/AIFF/M4A/AAC.
-4. Basic library table + track detail desktop UI (PySide6).
+4. Modern dark minimal desktop UI (PySide6) with search/filter.
+5. Single-track edit with immediate file tag writeback.
+6. Bulk edit with explicit editable fields and per-track result handling.
+7. Conflict detection + resolve actions (keep DB / accept file).
+8. Duplicate detection summary (exact hash groups + fuzzy candidates).
+9. Optional live folder watcher that triggers incremental resync.
 
 ## Run from a clean clone
 1. `git clone <your-repo-url> && cd stat_project`
