@@ -1,0 +1,1 @@
+"""Library table view scaffold."""

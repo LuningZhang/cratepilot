@@ -1,0 +1,1 @@
+"""Track detail view scaffold."""

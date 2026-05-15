@@ -1,0 +1,54 @@
+Project cratepilot {
+  database_type: "PostgreSQL"
+  Note: "CratePilot v1 schema"
+}
+
+Table tracks {
+  id uuid [pk]
+  absolute_path text [not null, unique]
+  file_name text [not null]
+  extension text [not null]
+  file_size_bytes bigint [not null]
+  mtime timestamptz [not null]
+  sha256 text
+  duration_sec numeric
+  title text
+  artist text
+  album text
+  year int
+  genre text
+  bpm numeric
+  musical_key text
+  comment text
+  track_number text
+  tag_version text
+  sync_status text [not null, default: 'pending']
+  last_tag_read_at timestamptz
+  last_tag_write_at timestamptz
+  missing_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table sync_events {
+  id uuid [pk]
+  track_id uuid
+  event_type text [not null]
+  status text [not null]
+  error_message text
+  payload jsonb [not null]
+  created_at timestamptz [not null]
+}
+
+Table edit_history {
+  id uuid [pk]
+  track_id uuid [not null]
+  field_name text [not null]
+  old_value text
+  new_value text
+  edited_by text [not null, default: 'local_user']
+  created_at timestamptz [not null]
+}
+
+Ref: sync_events.track_id > tracks.id
+Ref: edit_history.track_id > tracks.id

@@ -1,0 +1,26 @@
+[project]
+name = "cratepilot"
+version = "0.1.0"
+description = "macOS local DJ library manager scaffold"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "mutagen>=1.47.0",
+  "watchdog>=4.0.0",
+  "pyside6>=6.7.0",
+  "psycopg[binary]>=3.2.0",
+  "sqlalchemy>=2.0.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["cratepilot*"]
