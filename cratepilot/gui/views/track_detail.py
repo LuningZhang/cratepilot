@@ -1,6 +1,7 @@
 """Track detail widget."""
 
-from PySide6.QtWidgets import QFormLayout, QLabel, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QFormLayout, QLabel, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
 from cratepilot.db.models import Track
 
@@ -11,12 +12,26 @@ class TrackDetailView(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self._fields: dict[str, QLabel] = {}
-        form = QFormLayout(self)
+        container = QWidget()
+        form = QFormLayout(container)
+        form.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapLongRows)
+        form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         for key in ("Artist", "Title", "Album", "Year", "Genre", "BPM", "Key", "Status", "Path"):
             label = QLabel("-")
             label.setWordWrap(True)
+            label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+            label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
+            label.setMinimumWidth(320)
+            label.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
             form.addRow(f"{key}:", label)
             self._fields[key] = label
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        scroll.setWidget(container)
+        layout = QVBoxLayout(self)
+        layout.addWidget(scroll)
+        layout.setContentsMargins(0, 0, 0, 0)
 
     def set_track(self, track: Track | None) -> None:
         if track is None:

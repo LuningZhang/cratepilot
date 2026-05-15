@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QSplitter,
     QVBoxLayout,
     QWidget,
 )
@@ -42,13 +43,17 @@ class MainWindow(QMainWindow):
         top.addWidget(self.status_label)
         top.addStretch()
 
-        body = QHBoxLayout()
-        body.addWidget(self.table, 3)
-        body.addWidget(self.detail, 2)
+        splitter = QSplitter()
+        splitter.addWidget(self.table)
+        splitter.addWidget(self.detail)
+        splitter.setChildrenCollapsible(False)
+        splitter.setStretchFactor(0, 3)
+        splitter.setStretchFactor(1, 2)
+        splitter.setSizes([900, 500])
 
         layout = QVBoxLayout()
         layout.addLayout(top)
-        layout.addLayout(body)
+        layout.addWidget(splitter)
 
         central = QWidget()
         central.setLayout(layout)
