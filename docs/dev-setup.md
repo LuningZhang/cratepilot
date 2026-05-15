@@ -2,7 +2,7 @@
 
 ## 1. Prerequisites
 1. macOS 13+.
-2. Python 3.12+.
+2. Python 3.10+.
 3. One PostgreSQL option:
    - Postgres.app (recommended for local desktop use)
    - Homebrew PostgreSQL
@@ -15,9 +15,10 @@
 3. Copy `.env.example` to `.env` and update values.
 
 ## 3. Database bootstrap
-1. Create database `cratepilot`.
-2. Run SQL migrations in order from `db/migrations/`.
-3. Optional: load sample data from `db/seeds/sample_tracks.sql`.
+1. Set `DB_DSN`, `DB_NAME`, and `DB_ADMIN_DSN` in `.env`.
+2. App startup auto-creates `DB_NAME` if missing.
+3. App startup auto-applies all SQL files in `db/migrations/` in lexical order.
+4. Optional: manually load `db/seeds/sample_tracks.sql`.
 
 ## 4. Tests
 1. Run unit and integration skeleton tests with `pytest`.
@@ -25,3 +26,7 @@
 ## 5. Local folder setup
 1. Point `ROOT_FOLDER` to a small test music directory.
 2. Use fixture audio files in `tests/fixtures/sample_audio/` as they are added.
+
+## 6. Launch
+1. `cratepilot`
+2. Click **Run Initial Scan** in the app window.
