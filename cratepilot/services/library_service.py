@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 
 from sqlalchemy.orm import sessionmaker
 
@@ -10,6 +11,7 @@ from cratepilot.db.repositories.sync_event_repo import SyncEventRepository
 from cratepilot.db.repositories.track_repo import EDITABLE_FIELDS, TrackRepository
 from cratepilot.metadata.adapter import MetadataAdapter
 from cratepilot.services.duplicates import detect_exact_duplicates, detect_fuzzy_duplicates
+from cratepilot.services.file_name import unique_path_for_title
 
 
 @dataclass
@@ -37,7 +39,13 @@ class LibraryService:
         with self.session_factory() as session:
             return TrackRepository(session).get_track(track_id)
 
-    def update_track_metadata(self, track_id, updates: dict[str, object], edited_by: str = "local_user") -> bool:
+    def update_track_metadata(
+        self,
+        track_id,
+        updates: dict[str, object],
+        edited_by: str = "local_user",
+        rename_file_with_title: bool = False,
+    ) -> bool:
         with self.session_factory() as session:
             tracks = TrackRepository(session)
             events = SyncEventRepository(session)
@@ -46,17 +54,49 @@ class LibraryService:
             if track is None:
                 return False
             clean_updates = {k: v for k, v in updates.items() if k in EDITABLE_FIELDS}
+            renamed_from = None
+            renamed_to = None
             try:
                 self.adapter.write_tags(track.absolute_path, clean_updates)
+                if rename_file_with_title and clean_updates.get("title"):
+                    target_path = unique_path_for_title(track.absolute_path, str(clean_updates["title"]))
+                    if str(target_path) != track.absolute_path:
+                        renamed_from = track.absolute_path
+                        renamed_to = str(target_path)
+                        Path(track.absolute_path).rename(target_path)
+                        tracks.update_file_path(track, str(target_path))
                 changes = tracks.update_metadata_fields(track, clean_updates)
                 if changes:
                     history.append_changes(track.id, changes, edited_by=edited_by)
-                events.append_event(track.id, "manual_edit", "success", {"fields": list(clean_updates.keys())})
+                events.append_event(
+                    track.id,
+                    "manual_edit",
+                    "success",
+                    {
+                        "fields": list(clean_updates.keys()),
+                        "renamed_file": renamed_to is not None,
+                        "new_path": renamed_to,
+                    },
+                )
                 session.commit()
                 return True
             except Exception as exc:
-                tracks.mark_error(track)
-                events.append_event(track.id, "manual_edit", "failed", {"fields": list(clean_updates.keys())}, str(exc))
+                session.rollback()
+                if renamed_from and renamed_to and Path(renamed_to).exists() and not Path(renamed_from).exists():
+                    try:
+                        Path(renamed_to).rename(renamed_from)
+                    except OSError:
+                        pass
+                track = tracks.get_track(track_id)
+                if track is not None:
+                    tracks.mark_error(track)
+                events.append_event(
+                    track_id,
+                    "manual_edit",
+                    "failed",
+                    {"fields": list(clean_updates.keys()), "renamed_file": renamed_to is not None},
+                    str(exc),
+                )
                 session.commit()
                 return False
 

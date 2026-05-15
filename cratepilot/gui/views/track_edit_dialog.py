@@ -1,6 +1,6 @@
 """Single-track edit dialog."""
 
-from PySide6.QtWidgets import QDialog, QDialogButtonBox, QFormLayout, QLineEdit, QVBoxLayout
+from PySide6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QFormLayout, QLineEdit, QVBoxLayout
 
 from cratepilot.db.repositories.track_repo import EDITABLE_FIELDS
 
@@ -14,6 +14,8 @@ class TrackEditDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Edit Track Metadata")
         self._inputs: dict[str, QLineEdit] = {}
+        self.rename_checkbox = QCheckBox("Also rename file to match new title")
+        self.rename_checkbox.setChecked(False)
         form = QFormLayout()
         for field in ORDERED_FIELDS:
             if field not in EDITABLE_FIELDS:
@@ -26,6 +28,7 @@ class TrackEditDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout = QVBoxLayout(self)
         layout.addLayout(form)
+        layout.addWidget(self.rename_checkbox)
         layout.addWidget(buttons)
 
     def updates(self) -> dict[str, object]:
@@ -39,3 +42,6 @@ class TrackEditDialog(QDialog):
             else:
                 result[field] = value or None
         return result
+
+    def rename_file_with_title(self) -> bool:
+        return self.rename_checkbox.isChecked()

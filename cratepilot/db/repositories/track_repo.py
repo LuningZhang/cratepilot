@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
 from typing import Optional
 
 from sqlalchemy import or_, select
@@ -131,6 +132,14 @@ class TrackRepository:
             track.missing_at = None
         self.session.flush()
         return changes
+
+    def update_file_path(self, track: Track, new_path: str) -> None:
+        path_obj = Path(new_path)
+        track.absolute_path = str(path_obj)
+        track.file_name = path_obj.name
+        track.extension = path_obj.suffix.lower().lstrip(".")
+        track.missing_at = None
+        self.session.flush()
 
     def mark_conflict(self, track: Track) -> None:
         track.sync_status = "conflict"
