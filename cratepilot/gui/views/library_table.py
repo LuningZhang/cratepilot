@@ -49,6 +49,7 @@ class LibraryTable(QTableWidget):
                 item = QTableWidgetItem(value)
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.setItem(row, col, item)
+        self.clearSelection()
         self.horizontalScrollBar().setValue(0)
 
     def selected_tracks(self) -> list[Track]:

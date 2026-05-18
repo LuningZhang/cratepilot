@@ -62,8 +62,10 @@ class TrackRepository:
             return []
         return list(self.session.scalars(select(Track).where(Track.id.in_(track_ids))))
 
-    def list_tracks(self, search: str = "", limit: int = 5000) -> list[Track]:
+    def list_tracks(self, search: str = "", limit: int = 5000, include_missing: bool = False) -> list[Track]:
         statement = select(Track)
+        if not include_missing:
+            statement = statement.where(Track.sync_status != "missing")
         token = search.strip()
         if token:
             query = f"%{token}%"

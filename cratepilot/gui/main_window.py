@@ -90,6 +90,8 @@ class MainWindow(QMainWindow):
 
     def refresh_tracks(self) -> None:
         tracks = self.service.list_tracks(search=self.search.text())
+        self.current_track = None
+        self.detail.set_track(None); self.sync_panel.set_track_status(None)
         self.table.load_tracks(tracks)
         self.status_label.setText(f"Loaded {len(tracks)} tracks | Root: {self.root_folder}")
 
@@ -149,6 +151,8 @@ class MainWindow(QMainWindow):
             return
         try:
             reveal_in_finder(self.current_track.absolute_path)
+        except FileNotFoundError:
+            QMessageBox.warning(self, "File not found", "This track file no longer exists on disk. Run Scan Library to refresh the table.")
         except Exception as exc:
             QMessageBox.critical(self, "Reveal failed", f"Could not open file location.\n{exc}")
 
