@@ -23,7 +23,7 @@ CratePilot is a macOS desktop app for managing a local DJ music library with Pos
 
 ## Setup from a fresh clone
 1. Clone and enter the repo:
-   `git clone <your-repo-url> && cd stat_project`
+   `git clone <https://github.com/LuningZhang/cratepilot.git> && cd cratepilot`
 2. Create and activate a virtual environment:
    `python3 -m venv .venv && source .venv/bin/activate`
 3. Install dependencies:
