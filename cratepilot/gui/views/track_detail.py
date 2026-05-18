@@ -1,4 +1,4 @@
-"""Track detail widget."""
+"""Preview: card-style detail panel with readable typography and wrapped metadata values."""
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFormLayout, QLabel, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
@@ -11,6 +11,7 @@ class TrackDetailView(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.setObjectName("panel")
         self._fields: dict[str, QLabel] = {}
         container = QWidget()
         form = QFormLayout(container)
@@ -18,6 +19,7 @@ class TrackDetailView(QWidget):
         form.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.AllNonFixedFieldsGrow)
         for key in ("Artist", "Title", "Album", "Year", "Genre", "BPM", "Key", "Status", "Path"):
             label = QLabel("-")
+            label.setProperty("role", "value")
             label.setWordWrap(True)
             label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)

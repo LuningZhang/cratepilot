@@ -1,4 +1,4 @@
-"""Library table widget."""
+"""Preview: borderless high-density table with modern row spacing and hover/selection emphasis."""
 
 from typing import Iterable
 
@@ -16,10 +16,14 @@ class LibraryTable(QTableWidget):
 
     def __init__(self) -> None:
         super().__init__(0, 5)
+        self.setObjectName("panel")
         self.setHorizontalHeaderLabels(["Artist", "Title", "Album", "Year", "Genre"])
         self.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.setSelectionMode(QTableWidget.SelectionMode.ExtendedSelection)
+        self.setShowGrid(False)
+        self.setAlternatingRowColors(True)
         self.verticalHeader().setVisible(False)
+        self.verticalHeader().setDefaultSectionSize(44)
         self.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setWordWrap(False)

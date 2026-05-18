@@ -31,3 +31,4 @@
 1. `cratepilot`
 2. Click **Scan Library**.
 3. Optional: start live monitoring with **Start Watcher**.
+4. Use the top-right **sun/moon** button to toggle light/dark theme.

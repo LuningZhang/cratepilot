@@ -13,6 +13,7 @@ V1 build is runnable and includes:
 7. Conflict detection + resolve actions (keep DB / accept file).
 8. Duplicate detection summary (exact hash groups + fuzzy candidates).
 9. Optional live folder watcher that triggers incremental resync.
+10. UI/UX update: modern minimalist design system with native light/dark themes and manual theme toggle.
 
 ## Run from a clean clone
 1. `git clone <your-repo-url> && cd stat_project`

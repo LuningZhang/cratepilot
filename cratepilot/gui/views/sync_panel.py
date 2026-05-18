@@ -1,4 +1,4 @@
-"""Sync status and conflict panel."""
+"""Preview: compact action panel for reconcile/resolve flows with minimal controls."""
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
@@ -13,9 +13,13 @@ class SyncPanel(QWidget):
 
     def __init__(self) -> None:
         super().__init__()
+        self.setObjectName("panel")
         self.status = QLabel("Status: -")
+        self.status.setProperty("role", "title")
         self.hint = QLabel("No active conflict")
+        self.hint.setProperty("role", "caption")
         self.reconcile_button = QPushButton("Reconcile Selected")
+        self.reconcile_button.setProperty("variant", "primary")
         self.keep_db_button = QPushButton("Resolve: Keep DB")
         self.accept_file_button = QPushButton("Resolve: Accept File")
 

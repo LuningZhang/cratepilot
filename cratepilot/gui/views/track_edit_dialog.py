@@ -1,4 +1,4 @@
-"""Single-track edit dialog."""
+"""Preview: streamlined single-track editor with optional title-to-filename rename control."""
 
 from PySide6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QFormLayout, QLineEdit, QVBoxLayout
 
@@ -13,6 +13,7 @@ class TrackEditDialog(QDialog):
     def __init__(self, track, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Edit Track Metadata")
+        self.setObjectName("panel")
         self._inputs: dict[str, QLineEdit] = {}
         self.rename_checkbox = QCheckBox("Also rename file to match new title")
         self.rename_checkbox.setChecked(False)

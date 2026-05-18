@@ -1,4 +1,4 @@
-"""Bulk edit dialog."""
+"""Preview: minimalist bulk-edit modal using field toggles and clean form spacing."""
 
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -22,6 +22,7 @@ class BulkEditDialog(QDialog):
     def __init__(self, selected_count: int, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Bulk Edit Tracks")
+        self.setObjectName("panel")
         self._checks: dict[str, QCheckBox] = {}
         self._inputs: dict[str, QLineEdit] = {}
 
