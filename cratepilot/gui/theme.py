@@ -35,7 +35,7 @@ def app_stylesheet(theme_name: str) -> str:
         QMainWindow, QWidget {{
             background: {t.bg_primary};
             color: {t.text_primary};
-            font-family: "Inter", -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+            font-family: "Helvetica Neue", "Arial";
             font-size: {t.font_body}px;
         }}
         QWidget#toolbar {{

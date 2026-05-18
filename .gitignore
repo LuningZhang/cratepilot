@@ -7,12 +7,16 @@ venv/
 .DS_Store
 
 .env
+.env.*
+!.env.example
 *.sqlite3
 *.db
 
 dist/
 build/
 *.egg-info/
+
+.agents/
 
 audio/
 music/
