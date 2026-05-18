@@ -48,7 +48,7 @@ class MainWindow(MainWindowActionsMixin, QMainWindow):
         self.bulk_button = self._button("Bulk Edit", self.bulk_edit)
         self.dup_button = self._button("Find Duplicates", self.find_duplicates)
         self.watch_button = self._button("Start Watcher", self.toggle_watcher)
-        self.theme_button = self._button("", self.toggle_theme, "ghost")
+        self.theme_button = self._button("", self.toggle_theme, "theme-toggle")
         self.search = QLineEdit()
         self.search.setProperty("role", "search")
         self.search.setPlaceholderText("Search title, artist, album, genre, path...")

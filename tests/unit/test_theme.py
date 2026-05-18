@@ -12,5 +12,5 @@ def test_effective_theme_uses_system_when_auto(monkeypatch):
 
 
 def test_toggle_icon_for_theme():
-    assert theme.toggle_icon_for("dark") == "☀"
-    assert theme.toggle_icon_for("light") == "☾"
+    assert theme.toggle_icon_for("dark") == "☀  Light"
+    assert theme.toggle_icon_for("light") == "🌙  Dark"

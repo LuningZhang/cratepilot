@@ -22,7 +22,7 @@ def effective_theme(preference: str) -> str:
 
 
 def toggle_icon_for(theme_name: str) -> str:
-    return "☀" if theme_name == THEME_DARK else "☾"
+    return "☀  Light" if theme_name == THEME_DARK else "🌙  Dark"
 
 
 def tokens_for(theme_name: str) -> ThemeTokens:
@@ -91,6 +91,21 @@ def app_stylesheet(theme_name: str) -> str:
             padding: 0 {t.spacing_sm}px;
         }}
         QPushButton[variant="ghost"]:hover {{ background: {t.bg_elevated}; }}
+        QPushButton[variant="theme-toggle"] {{
+            min-width: 112px;
+            max-width: 112px;
+            min-height: 40px;
+            max-height: 40px;
+            border: 2px solid {t.accent};
+            border-radius: {t.radius_md}px;
+            background: {t.accent};
+            color: #FFFFFF;
+            font-size: {t.font_subhead}px;
+            font-weight: 600;
+            padding: 0 10px;
+        }}
+        QPushButton[variant="theme-toggle"]:hover {{ background: #0077EE; }}
+        QPushButton[variant="theme-toggle"]:pressed {{ background: #0066CC; }}
         QPushButton:disabled {{
             color: {t.text_tertiary};
             border-color: {t.border};
