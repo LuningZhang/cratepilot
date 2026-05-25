@@ -58,8 +58,9 @@ On startup, CratePilot automatically creates `DB_NAME` if needed and applies all
 3. Local runtime DB files are not committed (PostgreSQL is external to this repo).
 
 ## Development commands
-1. Run app: `cratepilot`
-2. Run tests: `pytest -q`
+1. Run app: `cratepilot` (launches the GUI in the background)
+2. Run app in foreground for debugging: `CRATEPILOT_FOREGROUND=1 cratepilot`
+3. Run tests: `pytest -q`
 
 ## Known limitations
 1. **macOS-only UX assumptions**: Finder reveal is implemented with `open -R`; Linux/Windows are not supported.
